@@ -1,26 +1,38 @@
 package main
 
-//func init() {
-//	log.SetPrefix("Blockchain: ")
-//}
+import (
+	"fmt"
+	"go-blockchain/blockchain"
+	"log"
+)
+
+func init() {
+	log.SetPrefix("Blockchain: ")
+}
 
 func main() {
-	bc := NewBlockchain()
+	blockchainAddress := "my_blockchain_address"
+	bc := blockchain.NewBlockchain(blockchainAddress)
 
 	bc.AddTransaction("A", "B", 1.0)
 	bc.AddTransaction("x", "z", 5.0)
 	bc.AddTransaction("x", "A", 7.1)
-	lastBlockHash := bc.LastBlock().Hash256()
-	bc.AddBlock(5, lastBlockHash)
+	bc.Mining()
+	//lastBlockHash := bc.LastBlock().Hash256()
+	//nonce := bc.GenerateProofOfWorkNonce()
+	//bc.AddBlock(nonce, lastBlockHash)
 
 	bc.AddTransaction("c", "g", 5.0)
 	bc.AddTransaction("c", "f", 7.1)
-	lastBlockHash = bc.LastBlock().Hash256()
-	bc.AddBlock(7, lastBlockHash)
-
-	bc.AddTransaction("e", "b", 5.0)
-	lastBlockHash = bc.LastBlock().Hash256()
-	bc.AddBlock(7, lastBlockHash)
+	bc.Mining()
+	//lastBlockHash = bc.LastBlock().Hash256()
+	//nonce = bc.GenerateProofOfWorkNonce()
+	//bc.AddBlock(nonce, lastBlockHash)
 
 	bc.Print()
+
+	fmt.Println("c", bc.CalculateBalance("c"))
+	fmt.Println("f", bc.CalculateBalance("f"))
+	fmt.Println("A", bc.CalculateBalance("A"))
+	fmt.Println("x", bc.CalculateBalance("x"))
 }

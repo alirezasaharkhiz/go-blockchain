@@ -1,4 +1,4 @@
-package main
+package blockchain
 
 import (
 	"encoding/json"
@@ -35,4 +35,22 @@ func (t *Transaction) MarshalJSON() ([]byte, error) {
 		ReceiverAddress: t.receiverAddress,
 		Amount:          t.amount,
 	})
+}
+
+func (bc *Blockchain) CalculateBalance(blockchainAddress string) float32 {
+	var balance float32 = 0.00
+	for _, b := range bc.chain {
+		for _, t := range b.transactions {
+			amount := t.amount
+			if blockchainAddress == t.receiverAddress {
+				balance += amount
+			}
+
+			if blockchainAddress == t.senderAddress {
+				balance -= amount
+			}
+		}
+	}
+
+	return balance
 }

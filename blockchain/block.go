@@ -1,4 +1,4 @@
-package main
+package blockchain
 
 import (
 	"crypto/sha256"
@@ -26,7 +26,6 @@ func NewBlock(nonce int, previousHash [32]byte, transactions []*Transaction) *Bl
 
 func (b *Block) Hash256() [32]byte {
 	mb, _ := json.Marshal(b)
-	//fmt.Println(string(mb))
 	return sha256.Sum256([]byte(mb))
 }
 

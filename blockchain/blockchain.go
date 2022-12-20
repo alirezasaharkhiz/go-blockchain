@@ -1,4 +1,4 @@
-package main
+package blockchain
 
 import (
 	"github.com/TwiN/go-color"
@@ -8,11 +8,12 @@ import (
 type Blockchain struct {
 	transactionPool []*Transaction
 	chain           []*Block
+	address         string
 }
 
-func NewBlockchain() *Blockchain {
+func NewBlockchain(address string) *Blockchain {
 	b := Block{}
-	bc := Blockchain{}
+	bc := Blockchain{address: address}
 	bc.AddBlock(0, b.Hash256())
 
 	return &bc
@@ -29,6 +30,15 @@ func (bc *Blockchain) AddBlock(nonce int, previousHash [32]byte) *Block {
 func (bc *Blockchain) AddTransaction(sender string, receiver string, amount float32) {
 	t := NewTransaction(sender, receiver, amount)
 	bc.transactionPool = append(bc.transactionPool, t)
+}
+
+func (bc *Blockchain) CloneTransactionPool() []*Transaction {
+	ts := make([]*Transaction, 0)
+	for _, t := range bc.transactionPool {
+		ts = append(ts, NewTransaction(t.senderAddress, t.receiverAddress, t.amount))
+	}
+
+	return ts
 }
 
 func (bc *Blockchain) Print() {
