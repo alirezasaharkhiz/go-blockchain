@@ -1,7 +1,12 @@
 package blockchain
 
 import (
+	"crypto/ecdsa"
+	"crypto/sha256"
+	"encoding/json"
 	"github.com/TwiN/go-color"
+	"go-blockchain/util"
+	"log"
 	"strings"
 )
 
@@ -27,9 +32,29 @@ func (bc *Blockchain) AddBlock(nonce int, previousHash [32]byte) *Block {
 	return b
 }
 
-func (bc *Blockchain) AddTransaction(sender string, receiver string, amount float32) {
+func (bc *Blockchain) AddTransaction(sender string, receiver string, amount float32, senderPublicKey *ecdsa.PublicKey, s *util.Signature) bool {
 	t := NewTransaction(sender, receiver, amount)
-	bc.transactionPool = append(bc.transactionPool, t)
+
+	if sender == MiningSender {
+		bc.transactionPool = append(bc.transactionPool, t)
+		return true
+	}
+
+	if bc.VerifyTransactionSignature(senderPublicKey, s, t) {
+		//
+		bc.transactionPool = append(bc.transactionPool, t)
+		return true
+	} else {
+		log.Println("ERR : Unverified transaction ", t)
+	}
+
+	return false
+}
+
+func (bc *Blockchain) VerifyTransactionSignature(senderPublicKey *ecdsa.PublicKey, s *util.Signature, t *Transaction) bool {
+	m, _ := json.Marshal(t)
+	h := sha256.Sum256([]byte(m))
+	return ecdsa.Verify(senderPublicKey, h[:], s.R, s.S)
 }
 
 func (bc *Blockchain) CloneTransactionPool() []*Transaction {
