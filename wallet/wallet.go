@@ -31,7 +31,7 @@ func NewWallet() *Wallet {
 	enc2 := ripemd160.New()
 	enc2.Write(dh1)
 	dh2 := enc2.Sum(nil)
-
+	//vb stands for version byte of blockchain
 	vb := make([]byte, 21)
 	vb[0] = 0x00
 	copy(vb[1:], dh2[:])
