@@ -7,7 +7,7 @@ import (
 
 const RequiredProofChar string = "0"
 
-func (bc *Blockchain) GenerateProofOfWorkNonce() int {
+func (bc *Blockchain) GenerateProofOfWorkValidNonce() int {
 	ts := bc.CloneTransactionPool()
 	ph := bc.LastBlock().Hash256()
 
