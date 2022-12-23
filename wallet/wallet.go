@@ -11,9 +11,9 @@ import (
 )
 
 type Wallet struct {
-	privateKey        *ecdsa.PrivateKey
-	publicKey         *ecdsa.PublicKey
-	blockchainAddress string
+	privateKey *ecdsa.PrivateKey
+	publicKey  *ecdsa.PublicKey
+	address    string
 }
 
 func NewWallet() *Wallet {
@@ -25,6 +25,7 @@ func NewWallet() *Wallet {
 	enc1 := sha256.New()
 	enc1.Write(w.publicKey.X.Bytes())
 	enc1.Write(w.publicKey.Y.Bytes())
+	//dh stands for digest hash
 	dh1 := enc1.Sum(nil)
 
 	enc2 := ripemd160.New()
@@ -50,7 +51,7 @@ func NewWallet() *Wallet {
 	copy(dh6[21:], chs[:])
 
 	adr := base58.Encode(dh6)
-	w.blockchainAddress = adr
+	w.address = adr
 
 	return w
 }
@@ -71,6 +72,6 @@ func (w *Wallet) GetPublicKeyAsString() string {
 	return fmt.Sprintf("%x%x", w.publicKey.X.Bytes(), w.publicKey.Y.Bytes())
 }
 
-func (w *Wallet) GetBlockchainAddress() string {
-	return w.blockchainAddress
+func (w *Wallet) GetAddress() string {
+	return w.address
 }
